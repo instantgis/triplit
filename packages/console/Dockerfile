@@ -11,6 +11,7 @@ COPY packages ./packages
 COPY templates ./templates
 COPY turbo.json ./turbo.json
 COPY tsconfig.json ./tsconfig.json
+COPY tsconfig.base.json ./tsconfig.base.json
 
 # Install dependencies for the monorepo and focus the console workspace
 RUN node .yarn/releases/yarn-4.2.2.cjs install --immutable
