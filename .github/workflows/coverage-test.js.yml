@@ -24,6 +24,7 @@ jobs:
           echo "COVERAGE=$(echo ${TOKENS[2]})" >> $GITHUB_ENV
 
       - name: Create Coverage Badge
+        if: github.repository == 'aspen-cloud/triplit'
         uses: schneegans/dynamic-badges-action@v1.1.0
         with:
           auth: ${{ secrets.GIST_SECRET }}
@@ -34,3 +35,4 @@ jobs:
           namedLogo: vitest
           color: blue
           logoColor: yellow
+
