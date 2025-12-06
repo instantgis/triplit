@@ -5,6 +5,11 @@ on:
     branches: [main]
     paths:
       - "packages/console/**"
+      - "packages/client/**"
+      - "packages/db/**"
+      - "packages/logger/**"
+      - "packages/types/**"
+      - "packages/react/**"
       - ".github/workflows/build-triplit-console.yml"
   workflow_dispatch:
 
@@ -28,8 +33,25 @@ jobs:
       - name: Install dependencies
         run: corepack yarn install --immutable
 
-      - name: Build @triplit/client (console runtime dep)
-        run: corepack yarn workspace @triplit/client build
+      - name: Build @triplit/logger
+        run: npx tsc --build
+        working-directory: packages/logger
+
+      - name: Build @triplit/types
+        run: npx tsc
+        working-directory: packages/types
+
+      - name: Build @triplit/db
+        run: npx tsc
+        working-directory: packages/db
+
+      - name: Build @triplit/client
+        run: npx tsc
+        working-directory: packages/client
+
+      - name: Build @triplit/react
+        run: npx tsc
+        working-directory: packages/react
 
       - name: Build console web bundle
         run: corepack yarn build:web
