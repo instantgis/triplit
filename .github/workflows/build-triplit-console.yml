@@ -1,5 +1,3 @@
-# Build and publish Triplit console Docker image for VPS
-# Watchtower on VPS auto-pulls new images
 name: Build Triplit Console
 
 on:
@@ -8,39 +6,29 @@ on:
     paths:
       - "packages/console/**"
       - ".github/workflows/build-triplit-console.yml"
-  workflow_dispatch:  # Manual trigger
-
-env:
-  IMAGE_NAME: adespaignet/triplit-console
+  workflow_dispatch:
 
 jobs:
-  build-and-push:
+  build-console-web:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          node-version: 20.18.0
+          cache: 'yarn'
 
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,value=latest,enable={{is_default_branch}}
-            type=sha,prefix=
+      - name: Enable Corepack
+        run: corepack enable
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./packages/console/Dockerfile
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      - name: Install dependencies
+        run: corepack yarn install --immutable
+        working-directory: .
+
+      - name: Build console web bundle
+        run: corepack yarn build:web
+        working-directory: packages/console
