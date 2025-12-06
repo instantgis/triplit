@@ -33,24 +33,25 @@ jobs:
       - name: Install dependencies
         run: corepack yarn install --immutable
 
+      # Use yarn tsc (workspace TypeScript 5.8.3) not npx tsc (may use wrong version)
       - name: Build @triplit/logger
-        run: npx tsc --build
+        run: corepack yarn tsc --build
         working-directory: packages/logger
 
       - name: Build @triplit/types
-        run: npx tsc
+        run: corepack yarn tsc
         working-directory: packages/types
 
       - name: Build @triplit/db
-        run: npx tsc
+        run: corepack yarn tsc
         working-directory: packages/db
 
       - name: Build @triplit/client
-        run: npx tsc
+        run: corepack yarn tsc
         working-directory: packages/client
 
       - name: Build @triplit/react
-        run: npx tsc
+        run: corepack yarn tsc
         working-directory: packages/react
 
       - name: Build console web bundle
