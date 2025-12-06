@@ -27,7 +27,9 @@ jobs:
 
       - name: Install dependencies
         run: corepack yarn install --immutable
-        working-directory: .
+
+      - name: Build @triplit/client (console runtime dep)
+        run: corepack yarn workspace @triplit/client build
 
       - name: Build console web bundle
         run: corepack yarn build:web
