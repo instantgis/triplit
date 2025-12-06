@@ -8,6 +8,7 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   publish-npm:
+    if: github.repository == 'aspen-cloud/triplit'
     runs-on: ubuntu-latest
     outputs:
       published: ${{ steps.changesets.outputs.published }}
@@ -43,7 +44,7 @@ jobs:
     needs: publish-npm
     runs-on: ubuntu-latest
     # TODO: only run if publish was made to @triplit/server
-    if: needs.publish-npm.outputs.published == 'true'
+    if: github.repository == 'aspen-cloud/triplit' && needs.publish-npm.outputs.published == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,3 +72,4 @@ jobs:
 
       - name: Build and push Bun server Docker image
         run: cd packages/bun-server && PROJECTS_ADMIN_API_URL=${{secrets.PROJECTS_ADMIN_API_URL}} PROJECTS_ADMIN_API_KEY=${{secrets.PROJECTS_ADMIN_API_KEY}} yarn check-and-publish
+
