@@ -18,8 +18,12 @@ COPY tsconfig.base.json ./tsconfig.base.json
 RUN node .yarn/releases/yarn-4.2.2.cjs install --immutable
 RUN node .yarn/releases/yarn-4.2.2.cjs workspaces focus @triplit/console --all
 
-# Build libraries console depends on (at minimum @triplit/client)
+# Build libraries console depends on (in dependency order)
+RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/logger build
+RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/types build
+RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/db build
 RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/client build
+RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/react build
 
 # Build the console SPA to dist/public
 RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/console build:web
@@ -28,11 +32,8 @@ RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/console build:web
 FROM nginx:1.27-alpine
 
 # Copy built assets from the build stage
-COPY --from=build /app/packages/console/dist/public /usr/share/nginx/html  
+COPY --from=build /app/packages/console/dist/public /usr/share/nginx/html
 
 EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]
-
-
-
