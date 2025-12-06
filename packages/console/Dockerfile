@@ -16,6 +16,7 @@ COPY tsconfig.base.json ./tsconfig.base.json
 # Install dependencies for the monorepo and focus the console workspace
 RUN node .yarn/releases/yarn-4.2.2.cjs install --immutable
 RUN node .yarn/releases/yarn-4.2.2.cjs workspaces focus @triplit/console --all
+RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/client build
 
 # Build the console SPA to dist/public
 RUN node .yarn/releases/yarn-4.2.2.cjs workspace @triplit/console build:web
